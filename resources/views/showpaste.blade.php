@@ -1,0 +1,1 @@
+<pre>{{$row->paste_data}}<pre>

@@ -1,0 +1,168 @@
+
+
+
+// followed this https://laravel-news.com/your-first-laravel-application
+
+
+
+
+
+
+// setup and create project
+composer create-project --prefer-dist laravel/laravel my_project "7.*"
+
+
+
+
+
+
+
+
+
+
+/// frontend
+
+
+here you go
+/routes/ -- at this there can be multiple files.
+    web.php --defines routes that are for web interface. web middleware group
+    api.php -- api middleware group
+
+/resources/views -- at this make some blades and route it. blades are templates (php+html)
+
+/// follow https://laravel.com/docs/7.x/frontend
+// normally bootstrap
+composer require laravel/ui:^2.4               // version is important. 2.4 is stable. 3.4 sucks
+npm install
+npm run dev
+php artisan ui bootstrap --auth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///backend
+
+//at .env file already a database setup done
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=
+
+
+
+
+
+
+// make migration file to setup the database
+php artisan make:migration create_paste_table_migration_file_name --create=database1
+// new file will be created at database/migration/datetime_file_name
+// edit up() method to keep however you want
+// this is the table name
+                    |
+                    V
+Schema::create('table1s', function (Blueprint $table) {
+      $table->increments('id');
+      $table->string('title');
+      $table->text('paste_data');
+      $table->timestamps();
+});
+
+
+
+
+
+// caution::::::::::::::::::::::::::
+// well thats frustrating and interesting. Laravel convention is that table names should be plural in this case
+// so when you make a migration file you should use the plural version of the table name. just add s at last
+// now when you generate fake data/ probably other things
+// you will have to use the singular version of the table name.
+// while you check the data compiler/composer automatically adds the plural version of the table name.
+
+
+// handling form data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// don't know why it isn't working
+// use fake data to show things 
+// our database name and table name same (singular and plural)
+// this one here is table name      |     in singular form (without s)
+                                    V
+php artisan make:model --factory Table1
+// make:model creates /app/Table1.php 
+// --factory flag here for making a file named ==> database/factories/Table1Factory.php ==> to generate app data
+// this model is from an api eloquent 
+
+// in factories
+//    in targetfactory in return dictionary ----- fill it ----- to generate fake data
+        'title' => substr($faker->sentence(2), 0, -1),
+        'paste_data' => $faker->paragraph,
+
+// we need to seed the generated data to table
+
+php artisan make:seeder Table1sTableSeeder
+
+// The make:seeder command generates a new database class and makes a file in /database/seeds/Table1sTableSeeder.php
+// in the public function run() add these---
+    factory(App\Table1::class, 5)->create();
+// this will create 5 fake data in the table of Table1s
+// In order to “activate” the Table1sTableSeeder, we need to call it from the main database/seeds/DatabaseSeeder.php run method
+    $this->call(Table1sTableSeeder::class);
+
+// now migrate:fresh --> this will refresh the database
+
+
+
+
+
+
+
+
+
+
+// to migrate / migrate:fresh will refresh the database
+php artisan migrate
+// to run 
+php artisan serv
